@@ -7,3 +7,5 @@
 Skill
 
 React, Firebase
+
+Avatar -> Gravatar
