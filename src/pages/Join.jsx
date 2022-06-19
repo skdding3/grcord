@@ -34,7 +34,6 @@ function Join() {
     const email = data.get("email");
     const password = data.get("password");
     const confirmPassword = data.get("confirmPassword");
-    console.log(data, name, email, password, confirmPassword);
 
     if (!name || !email || !password || !confirmPassword) {
       setError("모든 항목을 입력해주세요");
@@ -109,6 +108,7 @@ function Join() {
                 fullWidth
                 label="닉네임"
                 autoFocus
+                autoComplete="off"
               />
             </Grid>
             <Grid item xs={12}>
