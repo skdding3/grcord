@@ -11,7 +11,7 @@ import {
   updateProfile,
 } from "firebase/auth"; //
 import md5 from "md5";
-import { getDatebase, ref, set } from "firebase/database";
+import { getDatabase, ref, set } from "firebase/database";
 
 // 비밀번호 조건문
 const IsPasswordValid = (password, confirmPassword) => {
@@ -34,6 +34,7 @@ function Join() {
     const email = data.get("email");
     const password = data.get("password");
     const confirmPassword = data.get("confirmPassword");
+    console.log(data, name, email, password, confirmPassword);
 
     if (!name || !email || !password || !confirmPassword) {
       setError("모든 항목을 입력해주세요");
@@ -60,11 +61,15 @@ function Join() {
         displayName: name,
         photoURL: `https://www.gravatar.com/avatar/${md5(email)}?d=retro`,
       });
-      await set(ref(getDatebase(), "users/" + user.uid), {
+      await set(ref(getDatabase(), "users/" + user.uid), {
         name: user.displayName,
         avatar: user.photoURL,
       });
-    } catch (e) {}
+      // TODO store에 user 저장
+    } catch (e) {
+      setError(e.message);
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -84,7 +89,7 @@ function Join() {
           height: "100vh",
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+        <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
           <TagIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
@@ -143,7 +148,7 @@ function Join() {
             type="submit"
             fullWidth
             variant="contained"
-            color="secondary"
+            color="primary"
             loading={loading}
             sx={{ mt: 3, mb: 2 }}
           >
