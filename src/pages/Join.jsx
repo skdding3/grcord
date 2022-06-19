@@ -12,6 +12,8 @@ import {
 } from "firebase/auth"; //
 import md5 from "md5";
 import { getDatabase, ref, set } from "firebase/database";
+import { setUser } from "../store/userReducer";
+import { useDispatch } from "react-redux";
 
 // 비밀번호 조건문
 const IsPasswordValid = (password, confirmPassword) => {
@@ -25,6 +27,7 @@ const IsPasswordValid = (password, confirmPassword) => {
 };
 
 function Join() {
+  const dispatch = useDispatch();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const handleSubmit = (event) => {
@@ -64,6 +67,8 @@ function Join() {
         name: user.displayName,
         avatar: user.photoURL,
       });
+
+      dispatch(setUser(user));
       // TODO store에 user 저장
     } catch (e) {
       setError(e.message);

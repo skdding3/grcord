@@ -1,8 +1,9 @@
-import { Routes, Route } from "react-router-dom";
-import Join from "./pages/Join";
 import "./App.css";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Main from "./pages/Main";
+import Join from "./pages/Join";
 import Login from "./pages/Login";
-import { useDispatch } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { clearUser, setUser } from "./store/userReducer";
@@ -21,11 +22,15 @@ function App() {
     });
     return () => unsubscribe();
   }, [dispatch]);
+
   return (
     <Routes>
       <Route path="/" element={<Main />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/join" element={<Join />} />
+      <Route
+        path="/join"
+        element={currentUser ? <Navigate to="/" /> : <Join />}
+      />
     </Routes>
   );
 }
