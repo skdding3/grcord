@@ -1,7 +1,7 @@
 import { Alert, Avatar, Grid, TextField, Typography } from "@mui/material";
 import TagIcon from "@mui/icons-material/Tag";
 import { Box, Container } from "@mui/system";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
 import "../firebase"; // 폴더만 입력하면 index.js가 기본 설정
@@ -30,51 +30,56 @@ function Join() {
   const dispatch = useDispatch();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const name = data.get("name");
-    const email = data.get("email");
-    const password = data.get("password");
-    const confirmPassword = data.get("confirmPassword");
+  const postUserDate = useCallback(
+    async (name, email, password) => {
+      setLoading(true);
+      try {
+        const { user } = await createUserWithEmailAndPassword(
+          getAuth(),
+          email,
+          password
+        );
+        await updateProfile(user, {
+          displayName: name,
+          photoURL: `https://www.gravatar.com/avatar/${md5(email)}?d=retro`,
+        });
+        await set(ref(getDatabase(), "users/" + user.uid), {
+          name: user.displayName,
+          avatar: user.photoURL,
+        });
 
-    if (!name || !email || !password || !confirmPassword) {
-      setError("모든 항목을 입력해주세요");
-      return;
-    }
+        dispatch(setUser(user));
+        // TODO store에 user 저장
+      } catch (e) {
+        setError(e.message);
+        setLoading(false);
+      }
+    },
+    [dispatch]
+  );
+  const handleSubmit = useCallback(
+    (event) => {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget);
+      const name = data.get("name");
+      const email = data.get("email");
+      const password = data.get("password");
+      const confirmPassword = data.get("confirmPassword");
 
-    if (!IsPasswordValid(password, confirmPassword)) {
-      setError("비밀번호를 확인하세요.");
-      return;
-    }
+      if (!name || !email || !password || !confirmPassword) {
+        setError("모든 항목을 입력해주세요");
+        return;
+      }
 
-    postUserDate(name, email, password);
-  };
+      if (!IsPasswordValid(password, confirmPassword)) {
+        setError("비밀번호를 확인하세요.");
+        return;
+      }
 
-  const postUserDate = async (name, email, password) => {
-    setLoading(true);
-    try {
-      const { user } = await createUserWithEmailAndPassword(
-        getAuth(),
-        email,
-        password
-      );
-      await updateProfile(user, {
-        displayName: name,
-        photoURL: `https://www.gravatar.com/avatar/${md5(email)}?d=retro`,
-      });
-      await set(ref(getDatabase(), "users/" + user.uid), {
-        name: user.displayName,
-        avatar: user.photoURL,
-      });
-
-      dispatch(setUser(user));
-      // TODO store에 user 저장
-    } catch (e) {
-      setError(e.message);
-      setLoading(false);
-    }
-  };
+      postUserDate(name, email, password);
+    },
+    [postUserDate]
+  );
 
   useEffect(() => {
     if (!error) return;

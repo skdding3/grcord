@@ -1,17 +1,17 @@
+import { CircularProgress, Stack } from "@mui/material";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
-import { Routes, Route, Navigate } from "react-router-dom";
-import Main from "./pages/Main";
 import Join from "./pages/Join";
 import Login from "./pages/Login";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import Main from "./pages/Main";
 import { clearUser, setUser } from "./store/userReducer";
 
 function App() {
   const dispatch = useDispatch();
   const { isLoading, currentUser } = useSelector((state) => state.user);
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(getAuth(), (user) => {
       if (!!user) {
@@ -23,10 +23,23 @@ function App() {
     return () => unsubscribe();
   }, [dispatch]);
 
+  if (isLoading) {
+    return (
+      <Stack alignItems="center" justifyContent="center" height="100vh">
+        <CircularProgress color="primary" size={150} />
+      </Stack>
+    );
+  }
   return (
     <Routes>
-      <Route path="/" element={<Main />} />
-      <Route path="/login" element={<Login />} />
+      <Route
+        path="/"
+        element={currentUser ? <Main /> : <Navigate to="/login" />}
+      />
+      <Route
+        path="/login"
+        element={currentUser ? <Navigate to="/" /> : <Login />}
+      />
       <Route
         path="/join"
         element={currentUser ? <Navigate to="/" /> : <Join />}
