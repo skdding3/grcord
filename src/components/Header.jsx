@@ -32,7 +32,7 @@ function Header() {
         position="fixed"
         sx={{
           zIndex: (theme) => theme.zIndex.drawer + 1,
-          color: "black",
+          color: "white",
           backgroundColor: "primary",
         }}
       >
@@ -51,7 +51,7 @@ function Header() {
           </Box>
           <Box>
             <IconButton onClick={handleOpenMenu}>
-              <Typography variant="h6" component="div" sx={{ color: "black" }}>
+              <Typography variant="h6" component="div" sx={{ color: "white" }}>
                 {user.currentUser?.displayName}
               </Typography>
               <Avatar
