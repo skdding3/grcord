@@ -12,17 +12,61 @@ import {
   ListItemText,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import React from "react";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import "../firebase";
+import {
+  child,
+  push,
+  ref,
+  getDatabase,
+  update,
+  onChildAdded,
+} from "firebase/database";
+import { useEffect } from "react";
 
 function ChannelMenu() {
   const [open, setOpen] = useState(false);
   const [channelName, setChannelName] = useState("");
   const [channelDetail, setChannelDetail] = useState("");
+  const [channels, setChannels] = useState([]);
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  useEffect(() => {
+    const db = getDatabase();
+    const unsubscribe = onChildAdded(ref(db, "channels"), (snapshot) => {
+      setChannels((channelArr) => [...channelArr, snapshot.val()]);
+    });
+
+    return () => {
+      setChannels([]);
+      unsubscribe();
+    };
+  }, []);
+
+  const handleSubmit = useCallback(async () => {
+    const db = getDatabase();
+    const key = push(child(ref(db), "channels")).key;
+    const newChannel = {
+      id: key,
+      name: channelName,
+      details: channelDetail,
+    };
+    const updates = {};
+    updates["/channels/" + key] = newChannel;
+
+    try {
+      await update(ref(db), updates);
+      setChannelName("");
+      setChannelDetail("");
+      handleClose();
+    } catch (error) {
+      console.error(error);
+    }
+  }, [channelDetail, channelName]);
   return (
     <>
       {/* TODO 테마반영 */}
@@ -42,6 +86,17 @@ function ChannelMenu() {
             sx={{ wordBreak: "break-all", color: "white" }}
           />
         </ListItem>
+        {
+          //TODO store 구현, selected 구현
+          channels.map((channel) => (
+            <ListItem button key={channel.id}>
+              <ListItemText
+                primary={`# ${channel.name}`}
+                sx={{ wordBreak: "break-all", color: "white" }}
+              />
+            </ListItem>
+          ))
+        }
       </List>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>채널 추가</DialogTitle>
@@ -70,7 +125,7 @@ function ChannelMenu() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>취소</Button>
-          <Button>생성</Button>
+          <Button onClick={handleSubmit}>생성</Button>
         </DialogActions>
       </Dialog>
     </>
