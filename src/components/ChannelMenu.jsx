@@ -26,12 +26,17 @@ import {
   onChildAdded,
 } from "firebase/database";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setCurrentChannel } from "../store/channelReducer";
 
 function ChannelMenu() {
   const [open, setOpen] = useState(false);
   const [channelName, setChannelName] = useState("");
   const [channelDetail, setChannelDetail] = useState("");
   const [channels, setChannels] = useState([]);
+  const [activeChannelId, setActiveChannelId] = useState("");
+  const [firstLoaded, setFirstLoaded] = useState(true);
+  const dispatch = useDispatch();
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -46,6 +51,11 @@ function ChannelMenu() {
       unsubscribe();
     };
   }, []);
+
+  const changeChannel = (channel) => {
+    setActiveChannelId(channel.id);
+    dispatch(setCurrentChannel(channel));
+  };
 
   const handleSubmit = useCallback(async () => {
     const db = getDatabase();
@@ -67,6 +77,15 @@ function ChannelMenu() {
       console.error(error);
     }
   }, [channelDetail, channelName]);
+
+  useEffect(() => {
+    if (channels.length > 0 && firstLoaded) {
+      setActiveChannelId(channels[0].id);
+      dispatch(setCurrentChannel(channels[0]));
+      setFirstLoaded(false);
+    }
+  }, [channels, dispatch, firstLoaded]);
+
   return (
     <>
       {/* TODO 테마반영 */}
@@ -86,17 +105,24 @@ function ChannelMenu() {
             sx={{ wordBreak: "break-all", color: "white" }}
           />
         </ListItem>
-        {
-          //TODO store 구현, selected 구현
-          channels.map((channel) => (
-            <ListItem button key={channel.id}>
-              <ListItemText
-                primary={`# ${channel.name}`}
-                sx={{ wordBreak: "break-all", color: "white" }}
-              />
-            </ListItem>
-          ))
-        }
+        <List component="div" disablePadding sx={{ pl: 3 }}>
+          {
+            //TODO store 구현, selected 구현
+            channels.map((channel) => (
+              <ListItem
+                button
+                selected={channel.id === activeChannelId}
+                onClick={() => changeChannel(channel)}
+                key={channel.id}
+              >
+                <ListItemText
+                  primary={`# ${channel.name}`}
+                  sx={{ wordBreak: "break-all", color: "white" }}
+                />
+              </ListItem>
+            ))
+          }
+        </List>
       </List>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>채널 추가</DialogTitle>
