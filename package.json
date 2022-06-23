@@ -13,6 +13,7 @@
     "@testing-library/react": "^13.1.1",
     "@testing-library/user-event": "^13.5.0",
     "dayjs": "^1.11.1",
+    "dotenv": "^16.0.1",
     "emoji-mart": "^3.0.1",
     "firebase": "^9.6.11",
     "md5": "^2.3.0",
