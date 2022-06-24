@@ -3,6 +3,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import ChatHeader from "./ChatHeader";
 import Chatinput from "./Chatinput";
+import ChatMessage from "./ChatMessage";
 
 function Chat() {
   const { channel } = useSelector((state) => state);
@@ -25,6 +26,7 @@ function Chat() {
           }}
         >
           {/* 채팅메세지 */}
+          <ChatMessage />
         </List>
         <Divider />
         <Chatinput />
