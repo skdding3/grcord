@@ -38,6 +38,13 @@ function Chatinput() {
     ]
   );
 
+  // 엔터키 입력시 데이터 전송 로직 추가
+  const onKeyPress = (e) => {
+    if (e.key === "Enter") {
+      clickSendMessage();
+    }
+  };
+
   // 클릭시 데이터 전송 로직
   const clickSendMessage = useCallback(async () => {
     if (!message) return;
@@ -83,6 +90,7 @@ function Chatinput() {
           fullWidth
           value={message}
           onChange={handleChange}
+          onKeyPress={onKeyPress}
         />
       </Grid>
     </Grid>
