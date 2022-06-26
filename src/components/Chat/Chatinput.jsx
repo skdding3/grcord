@@ -13,12 +13,21 @@ import {
   serverTimestamp,
 } from "firebase/database";
 import { useSelector } from "react-redux";
+import { Picker } from "emoji-mart";
+import "emoji-mart/css/emoji-mart.css";
 
 function Chatinput() {
   const { channel, user } = useSelector((state) => state);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showEmoji, setShowEmoji] = useState(false);
+
   const handleChange = useCallback((e) => setMessage(e.target.value), []);
+
+  const handleTooglePicker = useCallback(
+    () => setShowEmoji((show) => !show),
+    []
+  );
 
   const createMessage = useCallback(
     () => ({
@@ -62,15 +71,34 @@ function Chatinput() {
     }
   }, [message, channel.currentChannel?.id, createMessage]);
 
+  // 이모지 선택시 채팅창 적용
+  const handleSelectEmoji = useCallback((e) => {
+    const sym = e.unified.split("-");
+    const codesArray = [];
+    sym.forEach((el) => codesArray.push("0x" + el));
+    const emoji = String.fromCodePoint(...codesArray);
+    setMessage((messageValue) => messageValue + emoji);
+  }, []);
+
   return (
     <Grid container sx={{ p: "20px" }}>
       <Grid item xs={12} sx={{ position: "relative" }}>
+        {showEmoji && (
+          <Picker
+            set="google"
+            className="emojipicker"
+            title="이모지를 선택하세요."
+            onSelect={handleSelectEmoji}
+            emoji="point_up"
+            style={{ position: "absolute", bottom: "80px" }}
+          />
+        )}
         <TextField
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
                 <IconButton>
-                  <InsertEmoticonIcon />
+                  <InsertEmoticonIcon onClick={handleTooglePicker} />
                 </IconButton>
                 <IconButton>
                   <ImageIcon />
