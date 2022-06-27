@@ -1,4 +1,10 @@
-import { Grid, IconButton, InputAdornment, TextField } from "@mui/material";
+import {
+  Grid,
+  IconButton,
+  InputAdornment,
+  LinearProgress,
+  TextField,
+} from "@mui/material";
 import ImageIcon from "@mui/icons-material/Image";
 import SendIcon from "@mui/icons-material/Send";
 import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
@@ -23,6 +29,8 @@ function Chatinput() {
   const [loading, setLoading] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
   const [ImageModalOpen, SetImageModalOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [percent, setPercent] = useState(0);
 
   const handleCilckOpen = useCallback(() => SetImageModalOpen(true), []);
   const handleClickClose = useCallback(() => SetImageModalOpen(false), []);
@@ -125,7 +133,18 @@ function Chatinput() {
           onChange={handleChange}
           onKeyPress={onKeyPress}
         />
-        <ImageModal open={ImageModalOpen} handleClose={handleClickClose} />
+        {/* 이미지 업로드시 용량 큰 업로드에 대한 진행상황 표기 (퍼센트) */}
+        {uploading ? (
+          <Grid item xs={12} sx={{ m: "10px" }}>
+            <LinearProgress variant="determinate" value={percent} />
+          </Grid>
+        ) : null}
+        <ImageModal
+          open={ImageModalOpen}
+          handleClose={handleClickClose}
+          setPercent={setPercent}
+          setUploading={setUploading}
+        />
       </Grid>
     </Grid>
   );

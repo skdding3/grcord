@@ -15,6 +15,7 @@ import "../../firebase";
 import {
   getDownloadURL,
   getStorage,
+  ref as refStorage,
   uploadBytesResumable,
 } from "firebase/storage";
 import { async } from "@firebase/util";
@@ -27,7 +28,7 @@ import {
 } from "firebase/database";
 import { useSelector } from "react-redux";
 
-function imageModal({ open, handleClose }) {
+function imageModal({ open, handleClose, setPercent, setUploading }) {
   const { channel, user } = useSelector((state) => state);
   const [file, setFile] = useState(null);
 
@@ -53,8 +54,9 @@ function imageModal({ open, handleClose }) {
     ]
   );
 
-  const UploadFile = () => {
-    // TODO uploading
+  const uploadFile = useCallback(() => {
+    // TODO uploading state
+    setUploading(true);
     const filePath = `chat/${uuidv4()}.${file.name.split(".").pop()}`;
     const uploadTask = uploadBytesResumable(
       refStorage(getStorage(), filePath),
@@ -67,35 +69,38 @@ function imageModal({ open, handleClose }) {
           (snap.bytesTransferred / snap.totalBytes) * 100
         );
         // set percent 함수 넣기
-        console.log(percentUploaded);
+        setPercent(percentUploaded);
       },
       (err) => {
         console.error("error");
-        // TODO uploading state
+        // TODO uploading state error
+        setUploading(false);
       },
       async () => {
         try {
-          const downloadUrl = await getDownloadURL(uploadTask.ref);
+          const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
           await set(
             push(ref(getDatabase(), "messages/" + channel.currentChannel?.id)),
             createImageMessage(downloadUrl)
           );
           // TODO uploading state
+          setUploading(false);
           unsubscribe();
         } catch (error) {
           console.error(error);
           // TODO uploading state
+          setUploading(false);
           unsubscribe();
         }
       }
     );
-  };
+  }, [channel.currentChannel?.id, createImageMessage, file]);
 
   const handleSendFile = useCallback(() => {
-    UploadFile();
+    uploadFile();
     handleClose();
     setFile(null);
-  }, [handleClose]);
+  }, [handleClose, uploadFile]);
 
   return (
     <Dialog open={open} onClose={handleClose}>

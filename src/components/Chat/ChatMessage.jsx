@@ -11,6 +11,8 @@ import React from "react";
 const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
+const IsImage = (message) => message.hasOwnProperty("image");
+
 function ChatMessage({ message, user }) {
   return (
     <ListItem>
@@ -37,14 +39,21 @@ function ChatMessage({ message, user }) {
             secondaryTypographyProps={{ color: "gray", ml: 1 }}
           />
         </Grid>
+        {/* TODO 이미지 추가 */}
         <Grid item xs={12}>
-          <ListItemText
-            align="left"
-            xs={{ wordBreak: "break-all" }}
-            primary={message.content}
-          />
-          {/* TODO 이미지 추가 */}
-          {/* <img alt="message" src="" style={{maxWidth:"100%"}} /> */}
+          {IsImage(message) ? (
+            <img
+              alt="message"
+              src={message.image}
+              style={{ maxWidth: "100%" }}
+            />
+          ) : (
+            <ListItemText
+              align="left"
+              xs={{ wordBreak: "break-all" }}
+              primary={message.content}
+            />
+          )}
         </Grid>
       </Grid>
     </ListItem>
