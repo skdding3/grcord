@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { UploadFile } from "@mui/icons-material";
 import {
   Button,
   Dialog,
@@ -18,7 +17,6 @@ import {
   ref as refStorage,
   uploadBytesResumable,
 } from "firebase/storage";
-import { async } from "@firebase/util";
 import {
   set,
   push,
@@ -94,7 +92,13 @@ function imageModal({ open, handleClose, setPercent, setUploading }) {
         }
       }
     );
-  }, [channel.currentChannel?.id, createImageMessage, file]);
+  }, [
+    channel.currentChannel?.id,
+    createImageMessage,
+    file,
+    setPercent,
+    setUploading,
+  ]);
 
   const handleSendFile = useCallback(() => {
     uploadFile();

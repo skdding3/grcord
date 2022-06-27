@@ -51,6 +51,7 @@ function Chat() {
     };
   }, [channel.currentChannel]);
 
+  // 메세지 자동 스크롤 기능
   useEffect(() => {
     const setTimeoutId = setTimeout(() => {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });

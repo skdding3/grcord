@@ -21,10 +21,21 @@ function Header() {
   const { user } = useSelector((state) => state);
   const [anchorEl, setAnchorEl] = useState(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
+
+  const handleCloseProfileModal = useCallback(() => {
+    setShowProfileModal(false);
+  }, []);
+
   const handleOpenMenu = useCallback((event) => {
     setAnchorEl(event.currentTarget);
   }, []);
   const handleCloseMenu = useCallback(() => setAnchorEl(null), []);
+
+  const handleClickOpen = useCallback(() => {
+    setShowProfileModal(true);
+    handleCloseMenu();
+  }, [handleCloseMenu]);
+
   const handleLogout = useCallback(async () => {
     await signOut(getAuth());
   }, []);
@@ -80,7 +91,10 @@ function Header() {
           </Box>
         </Toolbar>
       </AppBar>
-      <ProfileModal />
+      <ProfileModal
+        open={showProfileModal}
+        handleClose={handleCloseProfileModal}
+      />
     </>
   );
 }
