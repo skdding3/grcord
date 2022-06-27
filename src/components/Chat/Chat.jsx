@@ -9,7 +9,7 @@ import {
   onChildAdded,
   startAt,
 } from "firebase/database";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import ChatHeader from "./ChatHeader";
@@ -19,6 +19,7 @@ import ChatMessage from "./ChatMessage";
 function Chat() {
   const { channel, user } = useSelector((state) => state);
   const [messages, setMessages] = useState([]);
+  const messageEndRef = useRef();
 
   useEffect(() => {
     if (!channel.currentChannel) return;
@@ -49,6 +50,16 @@ function Chat() {
       unsubscribe?.();
     };
   }, [channel.currentChannel]);
+
+  useEffect(() => {
+    const setTimeoutId = setTimeout(() => {
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+    return () => {
+      clearTimeout(setTimeoutId);
+    };
+  }, [messages.length]);
+
   return (
     <>
       <Toolbar />
@@ -75,6 +86,7 @@ function Chat() {
               user={user}
             />
           ))}
+          <div ref={messageEndRef}></div>
         </List>
         <Divider />
         <Chatinput />
