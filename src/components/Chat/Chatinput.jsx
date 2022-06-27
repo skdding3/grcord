@@ -15,12 +15,17 @@ import {
 import { useSelector } from "react-redux";
 import { Picker } from "emoji-mart";
 import "emoji-mart/css/emoji-mart.css";
+import ImageModal from "../Modal/ImageModal";
 
 function Chatinput() {
   const { channel, user } = useSelector((state) => state);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
+  const [ImageModalOpen, SetImageModalOpen] = useState(false);
+
+  const handleCilckOpen = useCallback(() => SetImageModalOpen(true), []);
+  const handleClickClose = useCallback(() => SetImageModalOpen(false), []);
 
   const handleChange = useCallback((e) => setMessage(e.target.value), []);
 
@@ -100,7 +105,7 @@ function Chatinput() {
                 <IconButton>
                   <InsertEmoticonIcon onClick={handleTooglePicker} />
                 </IconButton>
-                <IconButton>
+                <IconButton onClick={handleCilckOpen}>
                   <ImageIcon />
                 </IconButton>
               </InputAdornment>
@@ -120,6 +125,7 @@ function Chatinput() {
           onChange={handleChange}
           onKeyPress={onKeyPress}
         />
+        <ImageModal open={ImageModalOpen} handleClose={handleClickClose} />
       </Grid>
     </Grid>
   );
