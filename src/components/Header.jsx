@@ -15,10 +15,12 @@ import { useState } from "react";
 import "../firebase";
 import { getAuth, signOut } from "firebase/auth";
 import { useCallback } from "react";
+import ProfileModal from "./Modal/ProfileModal";
 
 function Header() {
   const { user } = useSelector((state) => state);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
   const handleOpenMenu = useCallback((event) => {
     setAnchorEl(event.currentTarget);
   }, []);
@@ -68,7 +70,7 @@ function Header() {
               onClose={handleCloseMenu}
               anchorOrigin={{ vertical: "top", horizontal: "right" }}
             >
-              <MenuItem>
+              <MenuItem onClick={handleClickOpen}>
                 <Typography textAlign="center">프로필 이미지</Typography>
               </MenuItem>
               <MenuItem onClick={handleLogout}>
@@ -78,6 +80,7 @@ function Header() {
           </Box>
         </Toolbar>
       </AppBar>
+      <ProfileModal />
     </>
   );
 }
