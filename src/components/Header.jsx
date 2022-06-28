@@ -47,7 +47,7 @@ function Header() {
         sx={{
           zIndex: (theme) => theme.zIndex.drawer + 1,
           color: "white",
-          backgroundColor: "primary",
+          backgroundColor: "#78b3e0",
         }}
       >
         <Toolbar
