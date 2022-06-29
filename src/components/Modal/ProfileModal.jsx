@@ -117,7 +117,7 @@ function ProfileModal({ open, handleClose }) {
       <DialogActions>
         <Button onClick={closeModal}>취소</Button>
         {previewImage && (
-          <Button onClick={handleCropImage}>크롭 미리보기</Button>
+          <Button onClick={handleCropImage}>크롭 미리보기3</Button>
         )}
         {croppedImage && (
           <Button onClick={uploadCroppedImage}>프로필 이미지 저장</Button>
