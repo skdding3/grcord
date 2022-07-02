@@ -2,8 +2,9 @@ import { Box } from "@mui/system";
 import Header from "../components/Header";
 import React from "react";
 import { Drawer, Toolbar } from "@mui/material";
-import ChannelMenu from "../components/ChannelMenu";
+import ChannelMenu from "../components/Menu/ChannelMenu";
 import Chat from "../components/Chat/Chat";
+import ThemeMenu from "../components/Menu/ThemeMenu";
 
 function Main() {
   return (
@@ -13,6 +14,7 @@ function Main() {
       <Drawer variant="permanent" sx={{ width: 300 }} className="no-scroll">
         <Toolbar />
         <Box sx={{ display: "flex", minHeight: "calc( 100vh - 64px )" }}>
+          <ThemeMenu />
           <ChannelMenu />
         </Box>
       </Drawer>

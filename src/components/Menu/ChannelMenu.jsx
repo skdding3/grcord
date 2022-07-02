@@ -16,7 +16,7 @@ import { useState, useCallback } from "react";
 import React from "react";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import "../firebase";
+import "../../firebase";
 import {
   child,
   push,
@@ -27,7 +27,7 @@ import {
 } from "firebase/database";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setCurrentChannel } from "../store/channelReducer";
+import { setCurrentChannel } from "../../store/channelReducer";
 
 function ChannelMenu() {
   const [open, setOpen] = useState(false);
