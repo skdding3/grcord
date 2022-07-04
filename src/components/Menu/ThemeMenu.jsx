@@ -10,13 +10,17 @@ import {
 } from "@mui/material";
 import PaletteIcon from "@mui/icons-material/Palette";
 import { useState, useCallback } from "react";
-
-const [showThemeModal, setShowThemeModal] = useState(false);
-
-const handleClickOpen = useCallback(() => setShowThemeModal(true), []);
-const handleClose = useCallback(() => setShowThemeModal(false), []);
+import { HexColorPicker } from "react-colorful";
 
 function ThemeMenu() {
+  const [mainTheme, setMainTheme] = useState("#FFFFFF");
+  const [subTheme, setSubTheme] = useState("#FFFFFF");
+  const [showThemeModal, setShowThemeModal] = useState(false);
+
+  const handleChangeMain = useCallback((color) => setMainTheme(color), []);
+  const handleChangeSub = useCallback((color) => setSubTheme(color), []);
+  const handleClickOpen = useCallback(() => setShowThemeModal(true), []);
+  const handleClose = useCallback(() => setShowThemeModal(false), []);
   return (
     <>
       <List sx={{ overflow: "auto", width: 60, backgroundColor: "#150C16" }}>
@@ -43,7 +47,10 @@ function ThemeMenu() {
         <DialogTitle>테마 색상 선택</DialogTitle>
         <DialogContent>
           <Stack direction="row" spacing={2}>
-            <div>Main</div>
+            <div>
+              Main
+              <HexColorPicker color={mainTheme} onChange={handleChangeMain} />
+            </div>
             <div>Sub</div>
           </Stack>
         </DialogContent>
