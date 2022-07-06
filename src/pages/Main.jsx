@@ -5,11 +5,13 @@ import { Drawer, Toolbar } from "@mui/material";
 import ChannelMenu from "../components/Menu/ChannelMenu";
 import Chat from "../components/Chat/Chat";
 import ThemeMenu from "../components/Menu/ThemeMenu";
+import { useSelector } from "react-redux";
 
 function Main() {
+  const { theme } = useSelector((state) => state);
   return (
     // TODO backgroundColor 테마 적용
-    <Box sx={{ display: "flex", backgroundColor: "white" }}>
+    <Box sx={{ display: "flex", backgroundColor: theme.subTheme }}>
       <Header />
       <Drawer variant="permanent" sx={{ width: 300 }} className="no-scroll">
         <Toolbar />

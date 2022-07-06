@@ -23,6 +23,7 @@ import {
 } from "firebase/database";
 import { useDispatch, useSelector } from "react-redux";
 import { setTheme } from "../../store/themeReducer";
+
 function ThemeMenu() {
   const { user } = useSelector((state) => state);
   const dispatch = useDispatch();

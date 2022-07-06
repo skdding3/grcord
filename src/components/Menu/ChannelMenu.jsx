@@ -28,8 +28,10 @@ import {
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setCurrentChannel } from "../../store/channelReducer";
+import { useSelector } from "react-redux";
 
 function ChannelMenu() {
+  const { theme } = useSelector((state) => state);
   const [open, setOpen] = useState(false);
   const [channelName, setChannelName] = useState("");
   const [channelDetail, setChannelDetail] = useState("");
@@ -39,10 +41,12 @@ function ChannelMenu() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const db = getDatabase();
-    const unsubscribe = onChildAdded(ref(db, "channels"), (snapshot) => {
-      setChannels((channelArr) => [...channelArr, snapshot.val()]);
-    });
+    const unsubscribe = onChildAdded(
+      ref(getDatabase(), "channels"),
+      (snapshot) => {
+        setChannels((channelArr) => [...channelArr, snapshot.val()]);
+      }
+    );
 
     return () => {
       setChannels([]);
@@ -103,7 +107,9 @@ function ChannelMenu() {
   return (
     <>
       {/* TODO 테마반영 */}
-      <List sx={{ overflow: "auto", width: 240, backgroundColor: "#1976d2" }}>
+      <List
+        sx={{ overflow: "auto", width: 240, backgroundColor: theme.mainTheme }}
+      >
         <ListItem
           secondaryAction={
             <IconButton sx={{ color: "white" }} onClick={handleClickOpen}>
