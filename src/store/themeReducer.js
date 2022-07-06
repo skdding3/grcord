@@ -6,7 +6,7 @@ export const setTheme = (mainTheme, subTheme) => ({
   subTheme,
 });
 
-const initialState = { mainTheme: "#4c3c4c", subTheme: "#eee" };
+const initialState = { mainTheme: "#357EC7", subTheme: "primary" };
 
 const themeReducer = (state = initialState, action) => {
   switch (action.type) {
